@@ -13,7 +13,7 @@
 
     <description>shiro-redisson test</description>
 
-    <context:property-placeholder location="app.properties" />
+    <context:property-placeholder location="app.properties" system-properties-mode="OVERRIDE" />
 
     <redisson:client id="redisson">
         <redisson:single-server address="${redis.url}"/>

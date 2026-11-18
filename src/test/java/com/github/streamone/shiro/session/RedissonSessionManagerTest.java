@@ -9,11 +9,12 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import static org.apache.shiro.session.mgt.AbstractSessionManager.DEFAULT_GLOBAL_SESSION_TIMEOUT;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -40,13 +41,13 @@ public class RedissonSessionManagerTest {
                 if (initData != null) {
                     String host = initData.getHost();
                     if (host != null) {
-                        session = new SimpleSession(host);
-                        session.setStartTimestamp(null);
+                        session = spy(new SimpleSession(host));
+                        doReturn(null).when(session).getStartTimestamp();
                         return session;
                     }
                 }
-                session = new SimpleSession();
-                session.setStartTimestamp(null);
+                session = spy(new SimpleSession());
+                doReturn(null).when(session).getStartTimestamp();
                 return session;
             }
         };

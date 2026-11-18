@@ -1,10 +1,15 @@
 package com.github.streamone.shiro.cache;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
 import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.io.ResourceUtils;
-import org.apache.shiro.util.Initializable;
+import org.apache.shiro.lang.io.ResourceUtils;
+import org.apache.shiro.lang.util.Initializable;
+import org.apache.shiro.lang.util.SimpleByteSource;
+import org.apache.shiro.subject.ImmutablePrincipalCollection;
 import org.redisson.api.RMap;
 import org.redisson.api.RMapCache;
 import org.redisson.api.RedissonClient;
@@ -14,6 +19,7 @@ import org.redisson.spring.cache.CacheConfig;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -27,7 +33,10 @@ public class RedissonShiroCacheManager implements CacheManager, Initializable {
 
     private boolean allowNullValues = true;
 
-    private Codec codec = new JsonJacksonCodec();
+    private Codec codec = new JsonJacksonCodec(
+            new ObjectMapper()
+                    .addMixIn(SimpleByteSource.class, ByteSourceJson.class)
+                    .addMixIn(ImmutablePrincipalCollection.class, PrincipalCollectionJson.class));
 
     private RedissonClient redisson;
 
@@ -35,6 +44,24 @@ public class RedissonShiroCacheManager implements CacheManager, Initializable {
 
     private Map<String, CacheConfig> configMap = new ConcurrentHashMap<>();
     private ConcurrentMap<String, Cache> instanceMap = new ConcurrentHashMap<>();
+
+    /**
+     * Rehydrates the bytes in a cached Shiro authentication salt.
+     */
+    private abstract static class ByteSourceJson {
+        @JsonCreator
+        ByteSourceJson(@JsonProperty("bytes") byte[] bytes) {
+        }
+    }
+
+    /**
+     * Rehydrates the realm-to-principal map stored by Shiro.
+     */
+    private abstract static class PrincipalCollectionJson {
+        @JsonCreator
+        PrincipalCollectionJson(@JsonProperty("realmPrincipals") Map<String, Set<Object>> realmPrincipals) {
+        }
+    }
 
     public RedissonShiroCacheManager(){}
 

@@ -34,7 +34,7 @@ public class RedissonShiroCacheIniTest {
         securityManager.setRealm(iniRealm);
 
         Config redissonCfg = new Config();
-        redissonCfg.useSingleServer().setAddress("redis://127.0.0.1:6379");
+        redissonCfg.useSingleServer().setAddress(System.getProperty("redis.url", "redis://127.0.0.1:6379"));
         RedissonClient redisson = Redisson.create(redissonCfg);
         RedissonShiroCacheManager cacheManager = new RedissonShiroCacheManager();
         cacheManager.setRedisson(redisson);

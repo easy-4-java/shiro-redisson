@@ -16,7 +16,7 @@ import org.redisson.client.codec.Codec;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -65,7 +65,7 @@ public class RedissonSessionTest {
     public void testCreateSessionByInvalidState() {
         RedissonScript mockedScript = mock(RedissonScript.class);
         when(mockedScript.eval(anyString(), any(RScript.Mode.class), anyString(),
-            any(RScript.ReturnType.class), anyList(), any())).thenThrow(new RedisException("-1"));
+            any(RScript.ReturnType.class), anyList(), any(Object[].class))).thenThrow(new RedisException("-1"));
         RedissonClient mockedRedisson = mock(RedissonClient.class);
         when(mockedRedisson.getScript(any(Codec.class))).thenReturn(mockedScript);
 
@@ -77,7 +77,7 @@ public class RedissonSessionTest {
     public void testCreateSessionByInvalidState2() {
         RedissonScript mockedScript = mock(RedissonScript.class);
         when(mockedScript.eval(anyString(), any(RScript.Mode.class), anyString(),
-                any(RScript.ReturnType.class), anyList(), any())).thenThrow(new RedisException("-2"));
+                any(RScript.ReturnType.class), anyList(), any(Object[].class))).thenThrow(new RedisException("-2"));
         RedissonClient mockedRedisson = mock(RedissonClient.class);
         when(mockedRedisson.getScript(any(Codec.class))).thenReturn(mockedScript);
 

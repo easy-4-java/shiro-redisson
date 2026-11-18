@@ -8,23 +8,17 @@
 
 ### Redis based implementations of Apache Shiro's Cache and Session, using [redisson](https://github.com/redisson/redisson) as rich redis client.
 
-compatible with:
-* JDK 1.8 - 14
-* shiro 1.5.x
-* redisson 3.9.0+
-* redis 3+
+### Shiro 3 build
 
-### [Documentation](https://github.com/streamone/shiro-redisson/wiki)
+This branch targets Java 17 or later, Apache Shiro 3.0.2, Jakarta Servlet 6.1, and Redisson 3.52.0.
+Its Maven coordinate is `io.github.easy4j:shiro-redisson:3.0.x.20261119-SNAPSHOT`.
 
-### Download
-Maven dependency:
-```xml
-<dependency>
-    <groupId>com.github.streamone</groupId>
-    <artifactId>shiro-redisson</artifactId>
-    <version>1.5.0.RELEASE</version>
-</dependency>
-```
+Run the test suite against a dedicated Redis instance. The tests create and clear cache regions.
+Use `mvn verify -Dredis.url=redis://127.0.0.1:6379` to select the instance.
+Use `mvn install` with the same property to make the SNAPSHOT available to other local Maven builds.
+
+The default JSON codec preserves the Shiro 3 salt bytes and the principals grouped by realm.
+Existing authentication entries written with Shiro 1 class names require a fresh cache namespace during migration.
 
 ### Features
 * Shiro Cache implementation

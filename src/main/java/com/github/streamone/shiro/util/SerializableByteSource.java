@@ -1,7 +1,7 @@
 package com.github.streamone.shiro.util;
 
-import org.apache.shiro.util.ByteSource;
-import org.apache.shiro.util.SimpleByteSource;
+import org.apache.shiro.lang.util.ByteSource;
+import org.apache.shiro.lang.util.SimpleByteSource;
 
 import java.io.File;
 import java.io.InputStream;

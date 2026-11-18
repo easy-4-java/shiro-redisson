@@ -1,12 +1,13 @@
 package com.github.streamone.shiro.cache;
 
 import org.apache.shiro.cache.Cache;
-import org.apache.shiro.io.ResourceUtils;
+import org.apache.shiro.lang.io.ResourceUtils;
 import org.junit.Test;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.Codec;
 import org.redisson.codec.JsonJacksonCodec;
+import org.redisson.config.Config;
 import org.redisson.spring.cache.CacheConfig;
 
 import java.io.File;
@@ -24,7 +25,9 @@ public class RedissonShiroCacheManagerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructors() {
-        RedissonClient client = Redisson.create();
+        Config config = new Config();
+        config.useSingleServer().setAddress(System.getProperty("redis.url", "redis://127.0.0.1:6379"));
+        RedissonClient client = Redisson.create(config);
         InputStream in = null;
         File invalidConfigFile = null;
         try {
