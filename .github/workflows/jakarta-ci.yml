@@ -1,0 +1,42 @@
+name: Shiro 3 Jakarta CI
+
+on:
+  push:
+    branches:
+      - feature/REQ-20261119-wandl-redisson-shiro3
+      - test/20261119
+  pull_request:
+    branches:
+      - test/20261119
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7.4-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Verify cache and session behavior against Redis
+        run: mvn -B --no-transfer-progress clean verify
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: surefire-reports
+          path: target/surefire-reports
